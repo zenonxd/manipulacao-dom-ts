@@ -68,7 +68,7 @@ está ativo no momento.**
 
 **Lembrete! Sempre que criamos uma nova propriedade/atributo, ele PRECISA ser instanciado dentro do construtor da classe.**
 
-##### hide() & show()
+#### hide() & show()
 
 ```ts
     hide (element: Element) {
@@ -99,8 +99,6 @@ Agora, dentro do ``Main.ts``, podemos utilizar o método ``show()``:
 
 Vamos agora para o método responsável por controlar os slides.
 
-
-
 #### previous and next slide
 
 Inicialmente, iremos criar dois métodos: ``addControls()`` e ``init()``. Ambos métodos serão privates, não serão acessados
@@ -123,14 +121,14 @@ O pointerup basicamente é para mobile também e deixa você apertar e segurar, 
 
 No tocante a estilização: Ver aula 703.
 
-#### Lógica de cálculo (previous e next)
+###### Lógica de cálculo (previous e next)
 
 Vejamos agora como fazer o cálculo para o botão de next/prev.
 
 Vamos fazer uma constante que irá possuir um cálculo ternário, verificando se o próximo slide existe. Caso ele não exista,
 ele tem que retornar zero para voltar a primeira imagem.
 
-##### Next
+###### Next
 
 ```ts
 next() {
@@ -139,7 +137,7 @@ next() {
 }
 ```
 
-##### Prev
+###### Prev
 
 ```ts
 prev() {
@@ -151,3 +149,57 @@ prev() {
 
 
 
+
+
+#### Auto Slide
+
+Assim que clicarmos para passar para o próximo, ele vai contar um tempo e seguir para a próxima imagem.
+
+Inicialmente, poderíamos fazer assim:
+
+```ts
+private autoSlide(time: number) {
+    const id = setTimeout(() => this.next(), time);
+
+    clearTimeout(id);
+}
+```
+
+E iniciaríamos esse método dentro do ``show()``. Mas tem um porém!
+
+Se a gente clica numa imagem com esse ``autoSlide`` rolando, ele vai instanciar um outro timeout. Poderíamos utilizar sim
+o ``clearTimeOut(id)``, entretanto nosso modelo irá possuir a lógica de: se clicarmos na tela e segurar, ele vai pausar o timeout.
+
+Então precisamos criar uma API, um timeout customizado que irá permitir que a gente pause/continue/limpar a hora que quiser,
+sem precisar puxar pelo ID. 
+
+<hr>
+
+Criaremos um módulo chamado Timeout, realizando o export. Será uma classe, então terá algumas propriedades, como:
+
+1. Seu ID;
+2. A função que é ativada (handler), função de callback
+3. Seu construtor
+
+O construtor será "imitando" o ``setTimeout``, veja:
+
+![img_3.png](img_3.png)
+
+Ele recebe o handler (que é do tipo TimeHandler) e o valor (tempo). Portanto, utilizaremos esse TimeHandler dentro do
+construtor.
+
+Para pegarmos o ID, basicamente é alocar dentro dele o setTimout(), utilizando o handler e time.
+
+<hr>
+
+Com isso feito, podemos voltar para a classe do slide e importar essa classe (não esquecer do new).
+
+Agora, vamos a um adendo: para que possamos limpar o tempo, iremos criar um método clear dentro da nossa classe, 
+que irá utilizar o ID da mesma.
+
+Para podermos utilizar este método, precisamos alocar essa classe dentro de uma variável. Criamos lá em cima, ela precisa
+ser do tipo TimeOut ou null (null é quando o timeout não foi iniciado).
+
+Portanto, dentro do construtor, ela será instanciada como null inicialmente.
+
+Assim, sendo que esse método auto for iniciado, antes, precisamos limpar com o ``clear()``.

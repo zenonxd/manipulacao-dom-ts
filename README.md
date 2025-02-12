@@ -59,10 +59,10 @@ permaneceriam com a classe.
 
 Então, faremos o seguinte:
 
-1. Criaremos um método chamado ``hide(element: Element)``. Ele irá receber um elemento e iremos remover a sua classe ``active``.
+1. Criaremos um método chamado ``hide(element: Element)``. Ele irá receber um elemento e iremos remover a sua classe ``active``;
 2. Agora, dentro do método show, podemos pegar o Array de slides (que criamos no início e é o Array com os itens), 
-fazer um loop por ele e utilizando o método hide no elemento em questão. 
-3. Após isso, podemos adicionar a classe ``active``.
+fazer um loop por ele e utilizando o método hide no elemento em questão;
+3. Após isso, podemos adicionar a classe ``active``;
 4. **Um adendo: Podemos criar duas variáveis nessa classe, index e slide. Serão variáveis responsáveis por salvar qual index/slide
 está ativo no momento.**
 
@@ -96,3 +96,58 @@ da chamada do método ``show()``.
 Agora, dentro do ``Main.ts``, podemos utilizar o método ``show()``:
 
 ![img_2.png](img_2.png)
+
+Vamos agora para o método responsável por controlar os slides.
+
+
+
+#### previous and next slide
+
+Inicialmente, iremos criar dois métodos: ``addControls()`` e ``init()``. Ambos métodos serão privates, não serão acessados
+por ninguém.
+
+O ``init()`` será responsável por criar uma configuração inicial, ele irá:
+
+1. Iniciar o ``addControls()``;
+2. E iniciar o método ``show()``, responsável por mostrar o primeiro slide, que previamente estava no construtor da nossa classe.
+
+Já o ``addControls()`` será ativado somente uma vez (dentro do método ``init()``). Ele será responsável por:
+
+1. Criar os botões de prev/next;
+2. Adicionar os listeners (pointerup) com as suas respectivas funções.
+3. A função será arrow function apontando para o método diretamente.
+
+O pointerup basicamente é para mobile também e deixa você apertar e segurar, sem ativar até soltar.
+
+<hr>
+
+No tocante a estilização: Ver aula 703.
+
+#### Lógica de cálculo (previous e next)
+
+Vejamos agora como fazer o cálculo para o botão de next/prev.
+
+Vamos fazer uma constante que irá possuir um cálculo ternário, verificando se o próximo slide existe. Caso ele não exista,
+ele tem que retornar zero para voltar a primeira imagem.
+
+##### Next
+
+```ts
+next() {
+    const next = (this.index + 1) < this.slides.length ? this.index + 1 : 0;
+    this.show(next);
+}
+```
+
+##### Prev
+
+```ts
+prev() {
+    const prev = (this.index - 1) > 0? this.index - 1 : this.slides.length - 1;
+    this.show(prev);
+}
+```
+
+
+
+
